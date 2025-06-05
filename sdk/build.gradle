@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'com.diffplug.spotless' version libs.versions.spotlessVersion
+}
+
+group = "${group}"
+version = '0.0.1-SNAPSHOT'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of("${javaVersion}")
+
+spotless.java {
+    googleJavaFormat(libs.versions.googleJavaFormatVersion.get()).style('GOOGLE')
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}

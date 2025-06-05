@@ -1,0 +1,86 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'com.diffplug.spotless' version libs.versions.spotlessVersion
+    id 'org.springframework.boot' version libs.versions.springBootVersion
+}
+apply plugin: 'io.spring.dependency-management'
+
+group = "${group}"
+
+springBoot.buildInfo {
+    properties {
+        version = "${version}"
+    }
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of("${javaVersion}")
+jar.enabled = false
+
+spotless.java {
+    googleJavaFormat(libs.versions.googleJavaFormatVersion.get()).style('GOOGLE')
+}
+
+dependencyManagement.imports {
+    mavenBom SpringBootPlugin.BOM_COORDINATES
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    implementation "org.springframework.kafka:spring-kafka:${libs.versions.springKafkaVersion.get()}"
+
+    //utils
+    implementation "org.projectlombok:lombok:${libs.versions.lombokVersion.get()}"
+    annotationProcessor "org.projectlombok:lombok:${libs.versions.lombokVersion.get()}"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${libs.versions.springdocOpenApiVersion.get()}"
+
+    implementation "org.hibernate.validator:hibernate-validator:${libs.versions.hibernateValidatorVersion.get()}"
+
+    //JSR-305 annotations
+    implementation "com.github.spotbugs:spotbugs-annotations:${libs.versions.spotBugsAnnotationsVersion.get()}"
+
+    //mapstruct
+    implementation "com.naharoo.commons:mapstruct-facade-spring-boot-starter:${libs.versions.naharooMapstructFacadeSpringBootStarterVersion.get()}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${libs.versions.mapstructVersion.get()}"
+    implementation "org.mapstruct:mapstruct:${libs.versions.mapstructVersion.get()}"
+    compileOnly "org.projectlombok:lombok-mapstruct-binding:${libs.versions.lombokMapstructBindingVersion.get()}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${libs.versions.lombokMapstructBindingVersion.get()}"
+
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.incremental = false
+    options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring',
+                             '-Amapstruct.unmappedTargetPolicy=ERROR']
+}
+
+// populating values from gradle.properties to the specified spring application properties files
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with copySpec {
+        from 'src/main/resources'
+        include '**/application*.properties'
+        include '**/application*.yaml'
+        include '**/application*.yml'
+        include '/bootstrap-local.yml'
+        project.properties.findAll().each {
+            prop ->
+                if (prop.key != null && 'version' == prop.key) {
+                    filter(ReplaceTokens, tokens: [(prop.key): prop.value.toString()])
+                    filter(ReplaceTokens, tokens: [('project.' + prop.key): prop.value.toString()])
+                }
+        }
+    }
+}
