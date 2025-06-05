@@ -1,0 +1,12 @@
+server.port: 8080
+
+spring:
+  application:
+    name: publisher-ws
+  data:
+    mongodb:
+      database: publisher-ws
+      uri: mongodb://localhost:27017
+
+ws:
+  version: '@project.version@'

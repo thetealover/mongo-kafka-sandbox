@@ -1,0 +1,12 @@
+server.port: 8081
+
+spring:
+  application:
+    name: consumer-ws
+  data:
+    mongodb:
+      database: consumer-ws
+      uri: mongodb://localhost:27017
+
+ws:
+  version: '@project.version@'
