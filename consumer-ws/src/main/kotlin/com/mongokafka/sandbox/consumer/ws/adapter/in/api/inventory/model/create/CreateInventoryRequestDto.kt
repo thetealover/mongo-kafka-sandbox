@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
 data class CreateInventoryRequestDto(
-  @NotBlank val sku: String?,
-  @NotBlank val name: String?,
-  @NotNull val quantityOnHand: Int?,
-  @NotNull val reorderLevel: Int?,
+  @field:NotBlank val sku: String?,
+  @field:NotBlank val name: String?,
+  @field:NotNull val quantityOnHand: Int?,
+  @field:NotNull val reorderLevel: Int?,
 ) {
   fun mapToCreateInventoryRequest() =
     CreateInventoryRequest(

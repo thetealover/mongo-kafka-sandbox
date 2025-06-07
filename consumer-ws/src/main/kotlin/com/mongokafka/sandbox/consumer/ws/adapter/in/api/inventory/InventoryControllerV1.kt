@@ -8,7 +8,6 @@ import com.mongokafka.sandbox.consumer.ws.domain.inventory.usecase.get.GetInvent
 import com.mongokafka.sandbox.consumer.ws.domain.inventory.usecase.restock.RestockInventoryUseCase
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotNull
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.CREATED
@@ -28,10 +27,10 @@ class InventoryControllerV1(
 
   @PostMapping
   @ResponseStatus(CREATED)
-  fun create(@RequestBody requestDto: @Valid @NotNull CreateInventoryRequestDto?): InventoryDto {
+  fun create(@RequestBody @Valid requestDto: CreateInventoryRequestDto): InventoryDto {
     log.debug("Creating Inventory for request: {}", requestDto)
 
-    val inventory = createInventoryUseCase.create(requestDto!!.mapToCreateInventoryRequest())
+    val inventory = createInventoryUseCase.create(requestDto.mapToCreateInventoryRequest())
     val response = inventory.mapToDto()
 
     log.info("Created Inventory. response {}", response)
@@ -41,11 +40,11 @@ class InventoryControllerV1(
   @PatchMapping("/{sku}/restock")
   fun restock(
     @PathVariable("sku") sku: String,
-    @RequestBody requestDto: @Valid @NotNull RestockInventoryRequestDto?,
+    @RequestBody @Valid requestDto: RestockInventoryRequestDto,
   ): InventoryDto {
     log.debug("Restocking Inventory for request: {}", requestDto)
 
-    val inventory = restockInventoryUseCase.restock(requestDto!!.mapToRestockInventoryRequest(sku))
+    val inventory = restockInventoryUseCase.restock(requestDto.mapToRestockInventoryRequest(sku))
     val response = inventory.mapToDto()
 
     log.info("Restocked Inventory. response: {}", requestDto)
