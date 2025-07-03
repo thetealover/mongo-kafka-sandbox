@@ -1,12 +1,36 @@
-server.port: 8081
+server.port: 8080
 
 spring:
   application:
     name: consumer-ws
-  data:
-    mongodb:
-      database: consumer-ws
-      uri: mongodb://localhost:27017
+  kafka:
+    client-id: consumer-ws-client
+    consumer:
+      group-id: consumer-ws-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      max-poll-interval: 10000
+      properties:
+        spring.json.trusted.packages: "*"
 
 ws:
   version: '@project.version@'
+
+---
+
+spring.config.activate.on-profile: local
+server:
+  port: 8081
+
+spring:
+  data:
+    mongodb:
+      database: publisher-ws
+      uri: mongodb://localhost:27017
+  kafka:
+    bootstrap-servers: localhost:29092
+
+logging:
+  level:
+    org.apache.kafka: INFO
+    org.springframework.kafka: INFO

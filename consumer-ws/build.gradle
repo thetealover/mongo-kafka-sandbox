@@ -58,16 +58,17 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation(project(':sdk'))
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
+    implementation "io.github.oshai:kotlin-logging:${libs.versions.kotlinLoggingVersion.get()}"
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation "org.springframework.kafka:spring-kafka:${libs.versions.springKafkaVersion.get()}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${libs.versions.springdocOpenApiVersion.get()}"
-
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "io.github.oshai:kotlin-logging:${libs.versions.kotlinLoggingVersion.get()}"
 
     //JSR-305 annotations
     implementation "com.github.spotbugs:spotbugs-annotations:${libs.versions.spotBugsAnnotationsVersion.get()}"

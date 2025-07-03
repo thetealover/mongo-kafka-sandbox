@@ -2,7 +2,9 @@ plugins {
     id 'java'
     id 'groovy'
     id 'com.diffplug.spotless' version libs.versions.spotlessVersion
+    id 'org.springframework.boot' version libs.versions.springBootVersion
 }
+apply plugin: 'io.spring.dependency-management'
 
 group = "${group}"
 version = '0.0.1-SNAPSHOT'
@@ -13,7 +15,22 @@ spotless.java {
     googleJavaFormat(libs.versions.googleJavaFormatVersion.get()).style('GOOGLE')
 }
 
+bootJar.enabled = false
+
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "org.springframework.kafka:spring-kafka:${libs.versions.springKafkaVersion.get()}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jacksonAnnotationsVersion.get()}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jacksonDataBindVersion.get()}"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    
+    implementation "org.projectlombok:lombok:${libs.versions.lombokVersion.get()}"
+    annotationProcessor "org.projectlombok:lombok:${libs.versions.lombokVersion.get()}"
 }
