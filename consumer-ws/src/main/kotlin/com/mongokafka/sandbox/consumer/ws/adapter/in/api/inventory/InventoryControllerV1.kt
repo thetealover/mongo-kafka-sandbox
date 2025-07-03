@@ -6,10 +6,9 @@ import com.mongokafka.sandbox.consumer.ws.adapter.`in`.api.inventory.model.resto
 import com.mongokafka.sandbox.consumer.ws.domain.inventory.usecase.create.CreateInventoryUseCase
 import com.mongokafka.sandbox.consumer.ws.domain.inventory.usecase.get.GetInventoryByIdUseCase
 import com.mongokafka.sandbox.consumer.ws.domain.inventory.usecase.restock.RestockInventoryUseCase
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -23,17 +22,17 @@ class InventoryControllerV1(
   private val restockInventoryUseCase: RestockInventoryUseCase,
   private val getInventoryByIdUseCase: GetInventoryByIdUseCase,
 ) {
-  private val log: Logger = LoggerFactory.getLogger(InventoryControllerV1::class.java)
+  private val log = KotlinLogging.logger {}
 
   @PostMapping
   @ResponseStatus(CREATED)
   fun create(@RequestBody @Valid requestDto: CreateInventoryRequestDto): InventoryDto {
-    log.debug("Creating Inventory for request: {}", requestDto)
+    log.debug { "Creating Inventory for request: $requestDto" }
 
     val inventory = createInventoryUseCase.create(requestDto.mapToCreateInventoryRequest())
     val response = inventory.mapToDto()
 
-    log.info("Created Inventory. response {}", response)
+    log.info { "Created Inventory. response: $response" }
     return response
   }
 
@@ -42,23 +41,23 @@ class InventoryControllerV1(
     @PathVariable("sku") sku: String,
     @RequestBody @Valid requestDto: RestockInventoryRequestDto,
   ): InventoryDto {
-    log.debug("Restocking Inventory for request: {}", requestDto)
+    log.debug { "Restocking Inventory for request: $requestDto" }
 
     val inventory = restockInventoryUseCase.restock(requestDto.mapToRestockInventoryRequest(sku))
     val response = inventory.mapToDto()
 
-    log.info("Restocked Inventory. response: {}", requestDto)
+    log.info { "Restocked Inventory. response: $requestDto" }
     return response
   }
 
   @GetMapping("/{id}")
   fun getById(@PathVariable("id") id: String): InventoryDto {
-    log.debug("Getting Inventory with id: {}", id)
+    log.debug { "Getting Inventory with id: $id" }
 
     val inventory = getInventoryByIdUseCase.getById(id)
     val response = inventory.mapToDto()
 
-    log.info("Got Inventory by id: {}. response: {}", id, response)
+    log.info { "Got Inventory by id: $id. response: $response" }
     return response
   }
 }
