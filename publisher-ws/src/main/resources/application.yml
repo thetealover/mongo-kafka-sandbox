@@ -3,10 +3,18 @@ server.port: 8080
 spring:
   application:
     name: publisher-ws
+
+ws:
+  version: '@project.version@'
+
+---
+
+spring.config.activate.on-profile: local
+
+spring:
   data:
     mongodb:
       database: publisher-ws
       uri: mongodb://localhost:27017
-
-ws:
-  version: '@project.version@'
+  kafka:
+    bootstrap-servers: localhost:29092

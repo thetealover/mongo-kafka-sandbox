@@ -1,14 +1,15 @@
 [versions]
 springBootVersion = '3.5.0'
-spotlessVersion = '6.23.3'
 springKafkaVersion = '3.3.6'
 kotlinAllOpenVersion = '2.1.21'
 
+spotlessVersion = '6.23.3'
 ktfmtPluginVersion = '0.22.0'
 
 kotlinLoggingVersion = '7.0.7'
 hibernateValidatorVersion = '9.0.0.Final'
-
+jacksonAnnotationsVersion = '2.19.0'
+jacksonDataBindVersion = '2.19.1'
 mockitoVersion = '5.18.0'
 lombokVersion = '1.18.38'
 mapstructVersion = '1.5.5.Final'
